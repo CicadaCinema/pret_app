@@ -26,12 +26,15 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Center(
         child: Column(
           children: [
-            QrImage(
-              data: _code,
-              version: 1,
-              errorCorrectionLevel: 1,
-              size: 300.0,
-            ),
+            Spacer(),
+            _code == ""
+                ? QrImage(
+                    data: _code,
+                    version: 1,
+                    errorCorrectionLevel: 1,
+                    size: 300.0,
+                  )
+                : Text("No code"),
             ElevatedButton(
               child: Text('Options'),
               onPressed: () {
@@ -40,6 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Navigator.pushNamed(context, '/second');
               },
             ),
+            Spacer(),
           ],
         ),
       ),
