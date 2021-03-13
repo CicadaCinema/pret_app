@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -13,13 +14,23 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Text('First Screen'),
       ),
       body: Center(
-        child: ElevatedButton(
-          child: Text('Launch screen'),
-          onPressed: () {
-            // Navigate to the second screen when tapped.
-            // Navigate to the second screen using a named route.
-            Navigator.pushNamed(context, '/second');
-          },
+        child: Column(
+          children: [
+            QrImage(
+              data: "hello!",
+              version: 1,
+              errorCorrectionLevel: 1,
+              size: 300.0,
+            ),
+            ElevatedButton(
+              child: Text('Options'),
+              onPressed: () {
+                // Navigate to the second screen when tapped.
+                // Navigate to the second screen using a named route.
+                Navigator.pushNamed(context, '/second');
+              },
+            ),
+          ],
         ),
       ),
     );
