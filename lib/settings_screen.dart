@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsScreen extends StatefulWidget {
   @override
@@ -40,9 +41,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   padding: EdgeInsets.all(12),
                   child: Text('Submit'),
                 ),
-                onPressed: () {
+                onPressed: () async {
                   if (_formKey.currentState!.validate()) {
-                    print('Submit');
+                    final prefs = await SharedPreferences.getInstance();
+                    prefs.setString("code", _code);
+                    Navigator.pop(context);
                   }
                 },
               ),
