@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,31 +18,42 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {});
   }
 
+  void handleTimeout() {
+    print("timer");
+  }
+
   @override
   Widget build(BuildContext context) {
     getCode();
     return Scaffold(
       appBar: AppBar(
         title: Text('First Screen'),
+        actions: <Widget>[
+          // action button
+          IconButton(
+            icon: Icon(Icons.settings),
+            onPressed: () {
+              Navigator.pushNamed(context, '/second');
+            },
+          ),
+        ],
       ),
       body: Center(
         child: Column(
           children: [
             Spacer(),
             _code == ""
-                ? QrImage(
+                ? Text("No code")
+                : QrImage(
                     data: _code,
                     version: 1,
                     errorCorrectionLevel: 1,
                     size: 300.0,
-                  )
-                : Text("No code"),
+                  ),
             ElevatedButton(
-              child: Text('Options'),
+              child: Text('Start Timer'),
               onPressed: () {
-                // Navigate to the second screen when tapped.
-                // Navigate to the second screen using a named route.
-                Navigator.pushNamed(context, '/second');
+                Timer(Duration(seconds: 5), handleTimeout);
               },
             ),
             Spacer(),

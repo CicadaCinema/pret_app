@@ -26,8 +26,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
               TextFormField(
                 validator: (value) {
                   if (value == '') {
-                    return 'Cannot be empty';
-                  }
+                    return "Cannot be empty";
+                  }/*
+                  disabled for testing
+                  else if (value!.length != 12) {
+                    return "Invalid length";
+                  }*/
                   _code = value!;
                   return null;
                 },
