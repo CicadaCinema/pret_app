@@ -25,10 +25,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Spacer(),
               TextFormField(
                 validator: (value) {
+                  /*
+                disabled for testing
                   if (value == '') {
                     return "Cannot be empty";
-                  }/*
-                  disabled for testing
+                  }
+
                   else if (value!.length != 12) {
                     return "Invalid length";
                   }*/

@@ -26,10 +26,8 @@ dependencies:
 
   shared_preferences: ^2.0.4
   qr: ^2.0.0
-  # updated package should be updated soon to support null safety
-  qr_flutter:
-    git:
-      url: https://github.com/fzyzcjy/qr.flutter
+  qr_flutter: ^4.0.0
+  flutter_local_notifications: ^5.0.0-nullsafety.1 # prerelease - update to stable once available
 
 
   # The following adds the Cupertino Icons font to your application.
