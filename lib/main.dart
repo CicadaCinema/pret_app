@@ -1,9 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:pret_app/home_screen.dart';
 import 'package:pret_app/settings_screen.dart';
 
+import 'dart:async';
+import 'dart:io';
+
+import 'package:uni_links/uni_links.dart';
+import 'package:flutter/services.dart' show PlatformException;
+
+// flutter run --no-sound-null-safety
+// https://pub.dev/packages/uni_links
+// USE THIS FOR TESTING
+// adb shell am start -a android.intent.action.VIEW -c android.intent.category.BROWSABLE -d "http://flutterbooksample.com/book/g76g76g897/796fg9"
+
 void main() {
-  runApp(MyApp());
+  //runApp(MyApp());
+  runApp(SampleApp());
+}
+
+Future<Null> initUniLinks() async {
+  // Platform messages may fail, so we use a try/catch PlatformException.
+  try {
+    String initialLink = await getInitialLink();
+    // Parse the link and warn the user, if it is not correct,
+    // but keep in mind it could be `null`.
+    print(initialLink);
+    print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+  } on PlatformException {
+    // Handle exception by warning the user their action did not succeed
+    // return?
+    print("PlatformException");
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -118,6 +146,63 @@ class _MyHomePageState extends State<MyHomePage> {
         tooltip: 'Increment',
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+}
+
+class SampleApp extends StatelessWidget {
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Sample Shared App Handler',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      initialRoute: '/',
+      routes: {
+        // When navigating to the "/" route, build the FirstScreen widget.
+        '/': (context) => MyPage1(),
+        // When navigating to the "/second" route, build the SecondScreen widget.
+        '/book': (context) => MyPage2(),
+      },
+    );
+  }
+}
+
+class MyPage1 extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    initUniLinks();
+    return MaterialApp(
+      title: 'Welcome to Flutter1111111111111',
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('Welcome to Flutter1111111111111'),
+        ),
+        body: Center(
+          child: Text('Hello World111111111111'),
+        ),
+      ),
+    );
+  }
+}
+
+class MyPage2 extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    initUniLinks();
+    getInitialLink().then((value) => print(value));
+    return MaterialApp(
+      title: 'Welcome to Flutter22222222222222',
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('Welcome to Flutter222222222222'),
+        ),
+        body: Center(
+          child: Text('Hello World2222222222222222'),
+        ),
+      ),
     );
   }
 }
