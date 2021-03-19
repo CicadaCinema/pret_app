@@ -65,6 +65,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 tz.setLocalLocation(tz.getLocation("Europe/London"));
 
                 Duration duration = Duration(seconds: 5);
+
+
+                //////////////////////////////////// GARBAGE START
                 _time_end = DateTime.now().add(duration);
                 //Timer.periodic(Duration(seconds: 1), (Timer t) => setState((){}));
                 Timer(duration, handleTimeout);
@@ -72,18 +75,21 @@ class _HomeScreenState extends State<HomeScreen> {
                 FlutterLocalNotificationsPlugin
                     flutterLocalNotificationsPlugin =
                     FlutterLocalNotificationsPlugin();
-// initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
+                // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
                 const AndroidInitializationSettings
                     initializationSettingsAndroid =
                     AndroidInitializationSettings('baseline_coffee_white_24dp');
                 //final MacOSInitializationSettings initializationSettingsMacOS =
                 //MacOSInitializationSettings();
-                final InitializationSettings initializationSettings =
-                    InitializationSettings(
-                        android: initializationSettingsAndroid);
+                //final InitializationSettings initializationSettings =
+                //    InitializationSettings(
+                //        android: initializationSettingsAndroid);
                 flutterLocalNotificationsPlugin.initialize(
-                  initializationSettings,
+                  InitializationSettings(
+                      android: initializationSettingsAndroid),
                 ); //onSelectNotification: selectNotification
+
+                /////////////////////////////////// GARBAGE END
 
                 await flutterLocalNotificationsPlugin.zonedSchedule(
                     0,
