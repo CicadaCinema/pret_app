@@ -16,7 +16,7 @@ import 'package:flutter/services.dart' show PlatformException;
 
 void main() {
   //runApp(MyApp());
-  runApp(SampleApp());
+  runApp(DeepLinkApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -135,7 +135,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-class SampleApp extends StatelessWidget {
+class DeepLinkApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -146,19 +146,19 @@ class SampleApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => MyPage2(),
+        '/': (context) => DeepLinkTestPage(),
       },
     );
   }
 }
 
-class MyPage2 extends StatefulWidget {
+class DeepLinkTestPage extends StatefulWidget {
   @override
-  _MyPage2State createState() => _MyPage2State();
+  _DeepLinkTestPageState createState() => _DeepLinkTestPageState();
 }
 
-class _MyPage2State extends State<MyPage2> {
-  String _url = "111111111111111";
+class _DeepLinkTestPageState extends State<DeepLinkTestPage> {
+  String _url = "Initial value of URL";
 
   Future<Null> initUniLinks() async {
     // Platform messages may fail, so we use a try/catch PlatformException.
@@ -166,14 +166,17 @@ class _MyPage2State extends State<MyPage2> {
       String initialLink = await getInitialLink();
       // Parse the link and warn the user, if it is not correct,
       // but keep in mind it could be `null`.
-      _url = initialLink ?? "null";
-      print(initialLink);
-      print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+      _url = initialLink ?? "initialLink read as null";
+      //print(initialLink);
+      //print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     } on PlatformException {
       // Handle exception by warning the user their action did not succeed
       // return?
       print("PlatformException");
     }
+
+    // after everything is complete, refresh the widget
+    setState(() {});
   }
 
   @override
@@ -181,14 +184,15 @@ class _MyPage2State extends State<MyPage2> {
     initUniLinks();
 
     return MaterialApp(
-      title: 'Welcome to Flutter1111111111111',
+      title: 'Deep Linking',
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Welcome to Flutter1111111111111'),
+          title: Text('Deep Linking'),
         ),
         body: Center(
           child: Column(
             children: [
+              Spacer(),
               Text(_url),
               ElevatedButton(
                 child: Padding(
@@ -199,6 +203,7 @@ class _MyPage2State extends State<MyPage2> {
                   setState(() {});
                 },
               ),
+              Spacer(),
             ],
           ),
         ),
