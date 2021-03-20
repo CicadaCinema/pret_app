@@ -19,21 +19,6 @@ void main() {
   runApp(SampleApp());
 }
 
-Future<Null> initUniLinks() async {
-  // Platform messages may fail, so we use a try/catch PlatformException.
-  try {
-    String initialLink = await getInitialLink();
-    // Parse the link and warn the user, if it is not correct,
-    // but keep in mind it could be `null`.
-    print(initialLink);
-    print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-  } on PlatformException {
-    // Handle exception by warning the user their action did not succeed
-    // return?
-    print("PlatformException");
-  }
-}
-
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
@@ -161,19 +146,40 @@ class SampleApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        // When navigating to the "/" route, build the FirstScreen widget.
-        '/': (context) => MyPage1(),
-        // When navigating to the "/second" route, build the SecondScreen widget.
-        '/book': (context) => MyPage2(),
+        '/': (context) => MyPage2(),
       },
     );
   }
 }
 
-class MyPage1 extends StatelessWidget {
+class MyPage2 extends StatefulWidget {
+  @override
+  _MyPage2State createState() => _MyPage2State();
+}
+
+class _MyPage2State extends State<MyPage2> {
+  String _url = "111111111111111";
+
+  Future<Null> initUniLinks() async {
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      String initialLink = await getInitialLink();
+      // Parse the link and warn the user, if it is not correct,
+      // but keep in mind it could be `null`.
+      _url = initialLink ?? "null";
+      print(initialLink);
+      print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+    } on PlatformException {
+      // Handle exception by warning the user their action did not succeed
+      // return?
+      print("PlatformException");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     initUniLinks();
+
     return MaterialApp(
       title: 'Welcome to Flutter1111111111111',
       home: Scaffold(
@@ -181,26 +187,20 @@ class MyPage1 extends StatelessWidget {
           title: Text('Welcome to Flutter1111111111111'),
         ),
         body: Center(
-          child: Text('Hello World111111111111'),
-        ),
-      ),
-    );
-  }
-}
-
-class MyPage2 extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    initUniLinks();
-    getInitialLink().then((value) => print(value));
-    return MaterialApp(
-      title: 'Welcome to Flutter22222222222222',
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Welcome to Flutter222222222222'),
-        ),
-        body: Center(
-          child: Text('Hello World2222222222222222'),
+          child: Column(
+            children: [
+              Text(_url),
+              ElevatedButton(
+                child: Padding(
+                  padding: EdgeInsets.all(12),
+                  child: Text('setState'),
+                ),
+                onPressed: () async {
+                  setState(() {});
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
