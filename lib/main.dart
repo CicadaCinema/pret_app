@@ -158,7 +158,10 @@ class DeepLinkTestPage extends StatefulWidget {
 }
 
 class _DeepLinkTestPageState extends State<DeepLinkTestPage> {
-  String _url = "Initial value of URL";
+  String? _url1;
+  String? _url2;
+  String? _url3;
+  late StreamSubscription _sub;
 
   Future<Null> initUniLinks() async {
     // Platform messages may fail, so we use a try/catch PlatformException.
@@ -166,9 +169,27 @@ class _DeepLinkTestPageState extends State<DeepLinkTestPage> {
       String initialLink = await getInitialLink();
       // Parse the link and warn the user, if it is not correct,
       // but keep in mind it could be `null`.
-      _url = initialLink ?? "initialLink read as null";
+      if (_url1 != initialLink) {
+        _url1 = initialLink ?? "initialLink read as null";
+        _url3 = _url1;
+      }
       //print(initialLink);
       //print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+
+
+      // Attach a listener to the stream
+      _sub = getLinksStream().listen((String link) {
+        // Parse the link and warn the user, if it is not correct
+        //print("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
+        //print(link);
+        if (_url2 != link) {
+          _url2 = link ?? "initialLink read as null";
+          _url3 = _url2;
+        }
+      }, onError: (err) {
+        // Handle exception by warning the user their action did not succeed
+        print("Some error: " + err);
+      });
     } on PlatformException {
       // Handle exception by warning the user their action did not succeed
       // return?
@@ -177,6 +198,12 @@ class _DeepLinkTestPageState extends State<DeepLinkTestPage> {
 
     // after everything is complete, refresh the widget
     setState(() {});
+  }
+
+  @override
+  void dispose() {
+    _sub.cancel();
+    super.dispose();
   }
 
   @override
@@ -193,7 +220,9 @@ class _DeepLinkTestPageState extends State<DeepLinkTestPage> {
           child: Column(
             children: [
               Spacer(),
-              Text(_url),
+              Text(_url1 ?? "null"),
+              Text(_url2 ?? "null"),
+              Text(_url3 ?? "null"),
               ElevatedButton(
                 child: Padding(
                   padding: EdgeInsets.all(12),
