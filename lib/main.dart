@@ -9,6 +9,8 @@ import 'dart:io';
 import 'package:uni_links/uni_links.dart';
 import 'package:flutter/services.dart' show PlatformException;
 
+import 'misc.dart';
+
 // flutter run --no-sound-null-safety
 // adb shell am start -a android.intent.action.VIEW -c android.intent.category.BROWSABLE -d "http://flutterbooksample.com/book/g76g76g897/796fg9"
 
@@ -171,6 +173,9 @@ class _DeepLinkTestPageState extends State<DeepLinkTestPage> {
       String? initialLink = await getInitialLink();
       if (_url1 != initialLink) {
         _url1 = initialLink;
+        if (_url3 != _url1) {
+          showDialogBox("New link", _url1!, context);
+        }
         _url3 = _url1;
       }
     } on PlatformException {
@@ -182,6 +187,9 @@ class _DeepLinkTestPageState extends State<DeepLinkTestPage> {
     _sub = linkStream.listen((String? link) {
       if (_url2 != link) {
         _url2 = link;
+        if (_url3 != _url2) {
+          showDialogBox("New link", _url2!, context);
+        }
         _url3 = _url2;
       }
     }, onError: (err) {
