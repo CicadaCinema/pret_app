@@ -1,9 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:pret_app/home_screen.dart';
 import 'package:pret_app/settings_screen.dart';
 
+import 'dart:async';
+import 'dart:io';
+
+import 'package:uni_links/uni_links.dart';
+import 'package:flutter/services.dart' show PlatformException;
+
+// flutter run --no-sound-null-safety
+// adb shell am start -a android.intent.action.VIEW -c android.intent.category.BROWSABLE -d "http://flutterbooksample.com/book/g76g76g897/796fg9"
+
 void main() {
-  runApp(MyApp());
+  //runApp(MyApp());
+  runApp(DeepLinkApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -118,6 +129,106 @@ class _MyHomePageState extends State<MyHomePage> {
         tooltip: 'Increment',
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+}
+
+class DeepLinkApp extends StatelessWidget {
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Sample Shared App Handler',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => DeepLinkTestPage(),
+      },
+    );
+  }
+}
+
+class DeepLinkTestPage extends StatefulWidget {
+  @override
+  _DeepLinkTestPageState createState() => _DeepLinkTestPageState();
+}
+
+class _DeepLinkTestPageState extends State<DeepLinkTestPage> {
+  String? _url1;
+  String? _url2;
+  String? _url3;
+  late StreamSubscription _sub;
+
+  Future<Null> initUniLinks() async {
+    // this function refreshes the _url3 variable with the latest deep link
+    // docs at https://pub.dev/packages/uni_links#usage
+
+
+    // handle cold start
+    try {
+      String? initialLink = await getInitialLink();
+      if (_url1 != initialLink) {
+        _url1 = initialLink;
+        _url3 = _url1;
+      }
+    } on PlatformException {
+      print("PlatformException");
+    }
+
+
+    // handle background launch
+    _sub = linkStream.listen((String? link) {
+      if (_url2 != link) {
+        _url2 = link;
+        _url3 = _url2;
+      }
+    }, onError: (err) {
+      print("Exception: " + err);
+    });
+
+    // after everything is complete, refresh the widget
+    setState(() {});
+  }
+
+  @override
+  void dispose() {
+    _sub.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    initUniLinks();
+
+    return MaterialApp(
+      title: 'Deep Linking',
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('Deep Linking'),
+        ),
+        body: Center(
+          child: Column(
+            children: [
+              Spacer(),
+              Text(_url1 ?? "null"),
+              Text(_url2 ?? "null"),
+              Text(_url3 ?? "null"),
+              ElevatedButton(
+                child: Padding(
+                  padding: EdgeInsets.all(12),
+                  child: Text('setState'),
+                ),
+                onPressed: () async {
+                  setState(() {});
+                },
+              ),
+              Spacer(),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
