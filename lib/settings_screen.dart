@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -25,15 +26,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Spacer(),
               TextFormField(
                 validator: (value) {
-                  /*
-                disabled for testing
-                  if (value == '') {
-                    return "Cannot be empty";
+                  // only for release:
+                  if (kReleaseMode) {
+                    if (value == '') {
+                      return "Cannot be empty";
+                    } else if (value!.length != 12) {
+                      return "Invalid length";
+                    }
                   }
 
-                  else if (value!.length != 12) {
-                    return "Invalid length";
-                  }*/
                   _code = value!;
                   return null;
                 },
@@ -43,10 +44,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
               ),
               ElevatedButton(
-                child: Padding(
-                  padding: EdgeInsets.all(12),
-                  child: Text('Submit'),
-                ),
+                child: Text('Submit'),
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     final prefs = await SharedPreferences.getInstance();

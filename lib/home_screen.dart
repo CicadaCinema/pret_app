@@ -1,20 +1,22 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
-class HomeScreen extends StatefulWidget {
+class QrScreen extends StatefulWidget {
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _QrScreenState createState() => _QrScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _QrScreenState extends State<QrScreen> {
   String _code = "";
   DateTime? _time_end = null;
+  // TODO: update only when timer is visible
 
   void getCode() async {
     final prefs = await SharedPreferences.getInstance();
@@ -33,15 +35,15 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('First Screen'),
-        actions: <Widget>[
+        /*actions: <Widget>[
           // action button
           IconButton(
             icon: Icon(Icons.settings),
             onPressed: () {
-              Navigator.pushNamed(context, '/second');
+              Navigator.pushNamed(context, '/settings');
             },
           ),
-        ],
+        ],*/
       ),
       body: Center(
         child: Column(
@@ -64,7 +66,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 tz.initializeTimeZones();
                 tz.setLocalLocation(tz.getLocation("Europe/London"));
 
-                Duration duration = Duration(seconds: 5);
+                // different values for debug/release
+                Duration duration = Duration(seconds: 15);
+                if(kReleaseMode) {
+                  duration = Duration(minutes: 30);
+                }
 
 
                 //////////////////////////////////// GARBAGE START

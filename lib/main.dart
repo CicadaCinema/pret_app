@@ -2,49 +2,35 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pret_app/home_screen.dart';
 import 'package:pret_app/settings_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'dart:async';
-import 'dart:io';
 
 import 'package:uni_links/uni_links.dart';
 import 'package:flutter/services.dart' show PlatformException;
 
 import 'misc.dart';
 
-// flutter run --no-sound-null-safety
 // adb shell am start -a android.intent.action.VIEW -c android.intent.category.BROWSABLE -d "http://flutterbooksample.com/book/g76g76g897/796fg9"
 
 void main() {
-  //runApp(MyApp());
-  runApp(DeepLinkApp());
+  runApp(MyApp());
+  //runApp(DeepLinkApp());
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      // When using initialRoute, don’t define a home property.
-      //home: MyHomePage(title: 'Flutter Demo Home Page'),
       initialRoute: '/',
       routes: {
-        // When navigating to the "/" route, build the FirstScreen widget.
-        '/': (context) => HomeScreen(),
-        // When navigating to the "/second" route, build the SecondScreen widget.
-        '/second': (context) => SettingsScreen(),
+        '/': (context) => LauncherScreen(),
+        '/qr': (context) => QrScreen(),
+        '/settings': (context) => SettingsScreen(),
       },
     );
   }
@@ -146,27 +132,34 @@ class DeepLinkApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => DeepLinkTestPage(),
+        '/': (context) => LauncherScreen(),
       },
     );
   }
 }
 
-class DeepLinkTestPage extends StatefulWidget {
+class LauncherScreen extends StatefulWidget {
   @override
-  _DeepLinkTestPageState createState() => _DeepLinkTestPageState();
+  _LauncherScreenState createState() => _LauncherScreenState();
 }
 
-class _DeepLinkTestPageState extends State<DeepLinkTestPage> {
+class _LauncherScreenState extends State<LauncherScreen> {
   String? _url1;
   String? _url2;
   String? _url3;
   late StreamSubscription _sub;
 
+  Future<void> addCoupon(String couponCode) async {
+    print("ahh" + couponCode);
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString("code", couponCode);
+    await showDialogBox("Set new code", couponCode, context);
+
+  }
+
   Future<Null> initUniLinks() async {
     // this function refreshes the _url3 variable with the latest deep link
     // docs at https://pub.dev/packages/uni_links#usage
-
 
     // handle cold start
     try {
@@ -174,7 +167,8 @@ class _DeepLinkTestPageState extends State<DeepLinkTestPage> {
       if (_url1 != initialLink) {
         _url1 = initialLink;
         if (_url3 != _url1) {
-          showDialogBox("New link", _url1!, context);
+          print("show A");
+          await addCoupon(await couponUrlToCode(_url1!));
         }
         _url3 = _url1;
       }
@@ -182,13 +176,13 @@ class _DeepLinkTestPageState extends State<DeepLinkTestPage> {
       print("PlatformException");
     }
 
-
     // handle background launch
-    _sub = linkStream.listen((String? link) {
+    _sub = linkStream.listen((String? link) async {
       if (_url2 != link) {
         _url2 = link;
         if (_url3 != _url2) {
-          showDialogBox("New link", _url2!, context);
+          print("show B");
+          await addCoupon(await couponUrlToCode(_url2!));
         }
         _url3 = _url2;
       }
@@ -197,7 +191,7 @@ class _DeepLinkTestPageState extends State<DeepLinkTestPage> {
     });
 
     // after everything is complete, refresh the widget
-    setState(() {});
+    // setState(() {});
   }
 
   @override
@@ -220,7 +214,7 @@ class _DeepLinkTestPageState extends State<DeepLinkTestPage> {
           child: Column(
             children: [
               Spacer(),
-              Text(_url1 ?? "null"),
+              /*Text(_url1 ?? "null"),
               Text(_url2 ?? "null"),
               Text(_url3 ?? "null"),
               ElevatedButton(
@@ -231,7 +225,17 @@ class _DeepLinkTestPageState extends State<DeepLinkTestPage> {
                 onPressed: () async {
                   setState(() {});
                 },
-              ),
+              ),*/
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/qr');
+                  },
+                  child: Text("QR")),
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/settings');
+                  },
+                  child: Text("Settings")),
               Spacer(),
             ],
           ),
