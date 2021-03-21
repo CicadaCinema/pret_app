@@ -34,7 +34,7 @@ class _QrScreenState extends State<QrScreen> {
     getCode();
     return Scaffold(
       appBar: AppBar(
-        title: Text('First Screen'),
+        title: Text('QR Code'),
         /*actions: <Widget>[
           // action button
           IconButton(

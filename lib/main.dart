@@ -19,13 +19,32 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  Map<int, Color> pretColour = {
+    50: Color.fromRGBO(159, 27, 50, .1),
+    100: Color.fromRGBO(159, 27, 50, .2),
+    200: Color.fromRGBO(159, 27, 50, .3),
+    300: Color.fromRGBO(159, 27, 50, .4),
+    400: Color.fromRGBO(159, 27, 50, .5),
+    500: Color.fromRGBO(159, 27, 50, .6),
+    600: Color.fromRGBO(159, 27, 50, .7),
+    700: Color.fromRGBO(159, 27, 50, .8),
+    800: Color.fromRGBO(159, 27, 50, .9),
+    900: Color.fromRGBO(159, 27, 50, 1),
+  };
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Pret App',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+          primarySwatch: MaterialColor(0xFF9F1B32, pretColour),
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(
+              primary: Colors.green, // background
+            ),
+          )
+          //primaryColor: Color(0xFF9F1B32)
+          ),
       initialRoute: '/',
       routes: {
         '/': (context) => LauncherScreen(),
@@ -153,8 +172,7 @@ class _LauncherScreenState extends State<LauncherScreen> {
     print("ahh" + couponCode);
     final prefs = await SharedPreferences.getInstance();
     prefs.setString("code", couponCode);
-    await showDialogBox("Set new code", couponCode, context);
-
+    await showDialogBox("New code read", couponCode, context);
   }
 
   Future<Null> initUniLinks() async {
@@ -167,7 +185,7 @@ class _LauncherScreenState extends State<LauncherScreen> {
       if (_url1 != initialLink) {
         _url1 = initialLink;
         if (_url3 != _url1) {
-          print("show A");
+          //print("show A");
           await addCoupon(await couponUrlToCode(_url1!));
         }
         _url3 = _url1;
@@ -181,7 +199,7 @@ class _LauncherScreenState extends State<LauncherScreen> {
       if (_url2 != link) {
         _url2 = link;
         if (_url3 != _url2) {
-          print("show B");
+          //print("show B");
           await addCoupon(await couponUrlToCode(_url2!));
         }
         _url3 = _url2;
@@ -205,10 +223,11 @@ class _LauncherScreenState extends State<LauncherScreen> {
     initUniLinks();
 
     return MaterialApp(
-      title: 'Deep Linking',
+      title: 'Pret App',
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Deep Linking'),
+          backgroundColor: Color(0xFF9F1B32),
+          title: Text('Pret App'),
         ),
         body: Center(
           child: Column(
@@ -226,12 +245,22 @@ class _LauncherScreenState extends State<LauncherScreen> {
                   setState(() {});
                 },
               ),*/
+              Image.asset(
+                "assets/pret_logo.gif",
+              ),
               ElevatedButton(
+                  // TODO: why do the theme settings I applied above not apply to these two buttons????
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.green, // background
+                  ),
                   onPressed: () {
                     Navigator.pushNamed(context, '/qr');
                   },
                   child: Text("QR")),
               ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.green, // background
+                  ),
                   onPressed: () {
                     Navigator.pushNamed(context, '/settings');
                   },
