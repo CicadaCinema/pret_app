@@ -283,10 +283,12 @@ packages:
   uni_links:
     dependency: "direct main"
     description:
-      name: uni_links
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.4.0"
+      path: "."
+      ref: HEAD
+      resolved-ref: b3cf075c2f6a4f0bce65176abbb601d23a63bbdc
+      url: "git@github.com:objectivecosta/uni_links_simplified.git"
+    source: git
+    version: "0.5.0"
   vector_math:
     dependency: transitive
     description:

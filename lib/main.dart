@@ -10,8 +10,6 @@ import 'package:uni_links/uni_links.dart';
 import 'package:flutter/services.dart' show PlatformException;
 
 // flutter run --no-sound-null-safety
-// https://pub.dev/packages/uni_links
-// USE THIS FOR TESTING
 // adb shell am start -a android.intent.action.VIEW -c android.intent.category.BROWSABLE -d "http://flutterbooksample.com/book/g76g76g897/796fg9"
 
 void main() {
@@ -164,37 +162,31 @@ class _DeepLinkTestPageState extends State<DeepLinkTestPage> {
   late StreamSubscription _sub;
 
   Future<Null> initUniLinks() async {
-    // Platform messages may fail, so we use a try/catch PlatformException.
+    // this function refreshes the _url3 variable with the latest deep link
+    // docs at https://pub.dev/packages/uni_links#usage
+
+
+    // handle cold start
     try {
-      String initialLink = await getInitialLink();
-      // Parse the link and warn the user, if it is not correct,
-      // but keep in mind it could be `null`.
+      String? initialLink = await getInitialLink();
       if (_url1 != initialLink) {
-        _url1 = initialLink ?? "initialLink read as null";
+        _url1 = initialLink;
         _url3 = _url1;
       }
-      //print(initialLink);
-      //print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-
-
-      // Attach a listener to the stream
-      _sub = getLinksStream().listen((String link) {
-        // Parse the link and warn the user, if it is not correct
-        //print("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
-        //print(link);
-        if (_url2 != link) {
-          _url2 = link ?? "initialLink read as null";
-          _url3 = _url2;
-        }
-      }, onError: (err) {
-        // Handle exception by warning the user their action did not succeed
-        print("Some error: " + err);
-      });
     } on PlatformException {
-      // Handle exception by warning the user their action did not succeed
-      // return?
       print("PlatformException");
     }
+
+
+    // handle background launch
+    _sub = linkStream.listen((String? link) {
+      if (_url2 != link) {
+        _url2 = link;
+        _url3 = _url2;
+      }
+    }, onError: (err) {
+      print("Exception: " + err);
+    });
 
     // after everything is complete, refresh the widget
     setState(() {});
