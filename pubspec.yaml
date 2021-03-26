@@ -34,9 +34,10 @@ dependencies:
   flutter_local_notifications: ^5.0.0-nullsafety.1
   # pull request not yet accepted
   # uni_links: ^0.4.0
-  uni_links:
-    git:
-      url: git@github.com:objectivecosta/uni_links_simplified.git
+  # what is going on with the maintainer??
+  # https://github.com/avioli/uni_links/issues/103
+  # https://github.com/avioli/uni_links/pull/104
+  uni_links2:
 
 
 
