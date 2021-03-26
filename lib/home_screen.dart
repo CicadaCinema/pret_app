@@ -14,16 +14,16 @@ class QrScreen extends StatefulWidget {
 }
 
 class _QrScreenState extends State<QrScreen> {
-  String _code = "";
+  //String _code = "";
   DateTime? _time_end = null;
   // TODO: update only when timer is visible
 
-  void getCode() async {
+  /*void getCode() async {
     final prefs = await SharedPreferences.getInstance();
     _code = prefs.getString("code") ?? "";
 
     setState(() {});
-  }
+  }*/
 
   void handleTimeout() {
     _time_end = null;
@@ -31,7 +31,7 @@ class _QrScreenState extends State<QrScreen> {
 
   @override
   Widget build(BuildContext context) {
-    getCode();
+    //getCode();
     return Scaffold(
       appBar: AppBar(
         title: Text('QR Code'),
@@ -50,14 +50,39 @@ class _QrScreenState extends State<QrScreen> {
           children: [
             Spacer(),
             _time_end == null
-                ? _code == ""
-                    ? Text("Go to settings to set your code")
+                ? FutureBuilder<SharedPreferences>(
+                    future: SharedPreferences.getInstance(),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<SharedPreferences> snapshot) {
+                      String textMessage;
+                      if (snapshot.hasData) {
+                        String? codeString = snapshot.data!.getString("code");
+                        if (codeString == null) {
+                          textMessage = "Go to settings to set your code";
+                        } else {
+                          return QrImage(
+                            data: codeString,
+                            version: 1,
+                            errorCorrectionLevel: 1,
+                            size: 300.0,
+                          );
+                        }
+                      } else if (snapshot.hasError) {
+                        textMessage = "Could not load QR code.";
+                      } else {
+                        textMessage = "Loading QR code...";
+                      }
+                      return Text(textMessage);
+                    },
+                  )
+                /*_code == ""
+                    ? Text()
                     : QrImage(
                         data: _code,
                         version: 1,
                         errorCorrectionLevel: 1,
                         size: 300.0,
-                      )
+                      )*/
                 : Text("Time left: " +
                     _time_end!.difference(DateTime.now()).toString()),
             ElevatedButton(
@@ -68,10 +93,9 @@ class _QrScreenState extends State<QrScreen> {
 
                 // different values for debug/release
                 Duration duration = Duration(seconds: 15);
-                if(kReleaseMode) {
+                if (kReleaseMode) {
                   duration = Duration(minutes: 30);
                 }
-
 
                 //////////////////////////////////// GARBAGE START
                 _time_end = DateTime.now().add(duration);
