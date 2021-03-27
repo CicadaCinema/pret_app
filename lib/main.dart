@@ -1,3 +1,4 @@
+import 'package:android_intent/android_intent.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pret_app/home_screen.dart';
@@ -5,6 +6,7 @@ import 'package:pret_app/settings_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'dart:async';
+import 'dart:io';
 
 import 'package:uni_links2/uni_links.dart';
 import 'package:flutter/services.dart' show PlatformException;
@@ -249,22 +251,39 @@ class _LauncherScreenState extends State<LauncherScreen> {
                 "assets/pret_logo.gif",
               ),
               ElevatedButton(
-                  // TODO: why do the theme settings I applied above not apply to these two buttons????
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.green, // background
-                  ),
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/qr');
-                  },
-                  child: Text("QR")),
+                // TODO: why do the theme settings I applied above not apply to these two buttons????
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.green, // background
+                ),
+                onPressed: () {
+                  Navigator.pushNamed(context, '/qr');
+                },
+                child: Text("QR"),
+              ),
               ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.green, // background
-                  ),
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/settings');
-                  },
-                  child: Text("Settings")),
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.green, // background
+                ),
+                onPressed: () {
+                  Navigator.pushNamed(context, '/settings');
+                },
+                child: Text("Settings"),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.green, // background
+                ),
+                onPressed: () async {
+                  if (Platform.isAndroid) {
+                    AndroidIntent intent = AndroidIntent(
+                      action: 'action_view',
+                      data: "geo:0,0?q=Pret+a+Manger",
+                    );
+                    await intent.launch();
+                  }
+                },
+                child: Text("Find a Pret"),
+              ),
               Spacer(),
             ],
           ),
